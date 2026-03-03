@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zodiax-tutorials"
+version = "0.1.0"
+description = "Environment bundle for running Zodiax tutorial notebooks locally."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Louis Desdoigts" }]
+dependencies = [
+    "zodiax",
+    "dLux",
+    "optimistix",
+    "matplotlib",
+    "tqdm",
+    "numpyro",
+    "chainconsumer",
+    "jupyterlab",
+    "ipykernel",
+    "nbformat",
+    "nbconvert",
+]
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "ruff",
+]
+
+[tool.setuptools]
+py-modules = []
