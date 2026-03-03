@@ -13,3 +13,13 @@ pip install .
 ```
 
 Then you should be able to open and run the tutorials yourself directly!
+
+## Exporting Notebooks to docs
+
+This repo also allows the easy export of jupyter notebooks to markdown files for hosting on the [Zodiax docs](https://zodiax.readthedocs.io/en/latest/). To export the notebooks, simply run:
+
+```bash
+python export_notebooks.py tutorials/<notebook_of_choice>.ipynb 
+```
+
+This will export the notebook to `tutorials/<notebook_of_choice>.md`, and populate the `tutorials/assets/<notebook_of_choice>/` directory with any images or other assets, which can then be added to the docs of the main repo directly!

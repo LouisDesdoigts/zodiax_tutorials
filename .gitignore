@@ -24,3 +24,6 @@ pip-wheel-metadata/
 
 # macOS
 .DS_Store
+
+# Repo assets
+tutorials/assets/
