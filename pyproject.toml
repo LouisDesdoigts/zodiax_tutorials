@@ -16,6 +16,7 @@ dependencies = [
     "matplotlib",
     "tqdm",
     "numpyro",
+    "blackjax",
     "chainconsumer",
     "jupyterlab",
     "ipykernel",

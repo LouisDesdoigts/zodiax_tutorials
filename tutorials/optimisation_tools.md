@@ -18,10 +18,6 @@ import matplotlib.pyplot as plt
 jax.config.update("jax_enable_x64", True)
 ```
 
-    /Users/louis/mambaforge/envs/zdx-tuts/lib/python3.14/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
-      from .autonotebook import tqdm as notebook_tqdm
-
-
 
 ```python
 import matplotlib.pyplot as plt
@@ -237,7 +233,8 @@ for step in tqdm(range(500)):
 losses = np.array(losses)
 ```
 
-    100%|██████████| 500/500 [00:00<00:00, 671.04it/s]
+
+      0%|          | 0/500 [00:00<?, ?it/s]
 
 
 Now we can take a look at our loss curve and check the final value of our reduced chi-squared statistic to see how well we did. We can also look at the final parameters to see how close we got to the true values.
@@ -719,7 +716,8 @@ print("Final reduced chi-squared:", get_reduced_chi2(params, optics, observation
     initial reduced chi-squared: 1553037.1824619938
 
 
-    100%|██████████| 200/200 [00:04<00:00, 48.82it/s, log_loss=3.6472]
+
+      0%|          | 0/200 [00:00<?, ?it/s]
 
 
     Final reduced chi-squared: 1478.1168068610625
@@ -920,12 +918,11 @@ print("Final reduced chi-squared:", get_reduced_chi2(params, optics, observation
     initial reduced chi-squared: 1553037.1824619938
 
 
+
       0%|          | 0/100 [00:00<?, ?it/s]
 
-    100%|██████████| 100/100 [00:01<00:00, 60.69it/s, log_loss=0.4635]
 
-
-    Final reduced chi-squared: 0.9742225768208455
+    Final reduced chi-squared: 0.9742225768208457
 
 
 
@@ -1104,7 +1101,7 @@ print("Steps:", int(sol.stats["num_steps"]))
 ```
 
     Initial reduced chi-squared: 1553037.1824619938
-    Final reduced chi-squared: 0.9742223079396721
+    Final reduced chi-squared: 0.974222307939668
     Steps: 29
 
 
@@ -1139,7 +1136,7 @@ Excellent, not only can we see that now we recover the _correct_ solution, but w
 
 Now if we want to truly understand what our posteriors look like, we need to sample them directly. We can do this with [Numpyro](https://num.pyro.ai/en/stable/) which is a probabilistic programming library built on top of JAX. Numpyro is a _very_ powerful library, however in this also means that it can be quite complex to use for a lot of the simple problems we want to tackle. One of the main issues we face is that the samplers are much more stable when sampling from a _unit normal_ distribution. We could manually define unit priors and then transform them to the correct scales within our model, but this can be quite tedious and error prone. Luckily, we can use the same reparametrisation technique we used for optimisation to transform our problem into a unit normal space, which makes it much easier to sample from with numpyro! Lets look at how to do this with our hierarchical optical model.
 
-It should be noted here that MCCM algorithms are _not_ optimisers, which means we need to first fit our data (which we have) in order to correctly sample our posteriors!
+It should be noted here that MCMC algorithms are _not_ optimisers, which means we need to first fit our data (which we have) in order to correctly sample our posteriors!
 
 
 ```python
@@ -1231,31 +1228,29 @@ sampler.run(jr.key(0), args)
 sampler.print_summary()
 ```
 
-    sample: 100%|██████████| 3500/3500 [05:49<00:00, 10.02it/s, 7 steps of size 5.42e-01. acc. prob=0.90] 
+    sample: 100%|██████████| 3500/3500 [01:53<00:00, 30.85it/s, 7 steps of size 5.44e-01. acc. prob=0.90] 
+
 
     
                     mean       std    median      5.0%     95.0%     n_eff     r_hat
-     Latent[0]     -0.02      1.03     -0.03     -1.74      1.59   4193.92      1.00
-     Latent[1]     -0.01      1.06     -0.01     -1.78      1.68   4498.04      1.00
-     Latent[2]     -0.00      0.98     -0.01     -1.63      1.55   4704.01      1.00
-     Latent[3]     -0.00      0.95      0.01     -1.56      1.49   3757.81      1.00
-     Latent[4]      0.02      0.99      0.02     -1.56      1.68   6129.37      1.00
-     Latent[5]      0.02      1.01      0.01     -1.74      1.56   4113.58      1.00
-     Latent[6]     -0.01      0.99      0.00     -1.75      1.50   4940.96      1.00
-     Latent[7]      0.02      1.04      0.01     -1.72      1.66   5110.49      1.00
-     Latent[8]      0.02      1.03      0.02     -1.47      1.89   4052.82      1.00
-     Latent[9]      0.01      1.03     -0.01     -1.53      1.76   4775.03      1.00
-    Latent[10]     -0.01      0.98      0.00     -1.53      1.65   5026.96      1.00
-    Latent[11]     -0.02      1.01     -0.01     -1.70      1.58   4673.57      1.00
-    Latent[12]      0.00      1.02      0.01     -1.75      1.58   4140.21      1.00
-    Latent[13]     -0.00      0.97      0.01     -1.62      1.56   4972.45      1.00
-    Latent[14]      0.02      1.01      0.03     -1.79      1.57   4560.83      1.00
-    Latent[15]      0.01      0.98      0.01     -1.67      1.55   4722.11      1.00
+     Latent[0]     -0.03      1.00     -0.04     -1.77      1.52   4117.91      1.00
+     Latent[1]     -0.01      1.04      0.02     -1.66      1.71   6671.86      1.00
+     Latent[2]     -0.01      0.98     -0.01     -1.61      1.58   4722.02      1.00
+     Latent[3]     -0.00      0.96     -0.00     -1.53      1.57   4440.82      1.00
+     Latent[4]      0.03      0.99      0.02     -1.51      1.72   4935.31      1.00
+     Latent[5]      0.03      1.01      0.01     -1.68      1.62   3904.87      1.00
+     Latent[6]     -0.01      0.99      0.00     -1.63      1.59   6046.26      1.00
+     Latent[7]      0.02      1.03      0.02     -1.63      1.73   4850.53      1.00
+     Latent[8]      0.02      1.03      0.01     -1.57      1.73   4981.45      1.00
+     Latent[9]     -0.00      1.03     -0.03     -1.69      1.58   4247.56      1.00
+    Latent[10]     -0.01      0.99      0.01     -1.60      1.65   5306.65      1.00
+    Latent[11]     -0.01      1.01     -0.01     -1.69      1.61   5622.25      1.00
+    Latent[12]     -0.00      1.02      0.01     -1.79      1.59   4401.32      1.00
+    Latent[13]     -0.00      0.96     -0.00     -1.47      1.73   5290.57      1.00
+    Latent[14]      0.02      1.00      0.03     -1.63      1.73   4704.31      1.00
+    Latent[15]      0.02      0.99      0.01     -1.47      1.78   4479.42      1.00
     
     Number of divergences: 0
-
-
-    
 
 
 Great, we can see that our r_hat parameters are all close to unity, indicating good convergence. Lets have a look at the posterior samples, our estimate from the hessian we used to calculate the projection matrix, and what our true values are to see how well we did! Don't worry too much about the code below, its mostly just unpacking things to be plotted which can be quite tedious.
@@ -1317,7 +1312,7 @@ c.add_truth(Truth(location=truth_dict))
 fig = c.plotter.plot()
 ```
 
-    Parameter wfe_0 in chain MCMC posterior is not constrained
+    Parameter flux_red in chain MCMC posterior is not constrained
 
 
 
@@ -1325,6 +1320,135 @@ fig = c.plotter.plot()
 ![png](assets/optimisation_tools_files/output_53_1.png)
     
 
+
+## 7. Posterior Sampling with Blackjax
+
+Although very powerful, Numpyro can often be unnecessarily complex and unwieldly.  If we can already express a log-likelihood function for our model (as is the case for all the models considered in this tutorial), it can be more straightforward to use [Blackjax](https://blackjax-devs.github.io/blackjax/index.html), which provides dedicated sampling functionality.  
+
+Note that the same caveats that apply to Numpyro also largely apply to Blackjax - it is necessary to optimise first before performing MCMC, and parameter transformation using the Hessian can substantially improve convergence in tricky cases.  It is also possible to set custom mass matrices and use more sophisticated samplers provided by Blackjax, although this is beyond the scope of this tutorial.  
+
+
+```python
+import blackjax
+
+# define a sampling function which transforms to the latent space and calculates the log-likelihood
+def sampling_fn(latent_params, args):
+    project_fn, optics, observations = args
+    # Project the latent parameters
+    params = project_fn(latent_params)
+
+    return loglike_fn(params, (optics, observations))
+
+# wrap all the extra parameters into a dedicated log likelihood
+loglike = lambda params: sampling_fn(params, (mle_project_fn, optics, observations))
+
+# inference loop from Blackjax docs
+def inference_loop(rng_key, kernel, initial_state, num_samples):
+    @jax.jit
+    def one_step(state, rng_key):
+        state, _ = kernel(rng_key, state)
+        return state, state
+
+    keys = jax.random.split(rng_key, num_samples)
+    _, states = jax.lax.scan(one_step, initial_state, keys)
+
+    return states
+
+# initialise at the centre of our transformed distribution
+initial_position = np.zeros_like(X0)
+
+rng_key = jr.key(0)
+rng_key, warmup_key, sample_key = jax.random.split(rng_key, 3)
+
+#  perform a warmup to adapt the mass matrix
+warmup = blackjax.window_adaptation(blackjax.nuts, loglike, progress_bar=True)
+(state, parameters), _ = warmup.run(warmup_key, initial_position, num_steps=1000)
+
+# run inference with the known mass matrix
+kernel = blackjax.nuts(loglike, **parameters).step
+states = inference_loop(sample_key, kernel, state, 2500)
+
+# extract samples, blocking avoids lazy evaluation for timing purposes
+blackjax_samples = states.position.block_until_ready()
+```
+
+    Running window adaptation
+
+
+
+
+<style>
+    progress { appearance: none; border: none; border-radius: 4px; width: 300px;
+        height: 20px; vertical-align: middle; background: #e0e0e0; }
+
+    progress::-webkit-progress-bar { background: #e0e0e0; border-radius: 4px; }
+    progress::-webkit-progress-value { background: #2196F3; border-radius: 4px; }
+    progress::-moz-progress-bar { background: #2196F3; border-radius: 4px; }
+
+    progress:not([value]) {
+        background: repeating-linear-gradient(45deg, #7e7e7e, #7e7e7e 10px, #5c5c5c 10px, #5c5c5c 20px); }
+
+    progress.progress-bar-interrupted::-webkit-progress-value { background: #F44336; }
+    progress.progress-bar-interrupted::-moz-progress-value { background: #F44336; }
+    progress.progress-bar-interrupted::-webkit-progress-bar { background: #F44336; }
+    progress.progress-bar-interrupted::-moz-progress-bar { background: #F44336; }
+    progress.progress-bar-interrupted { background: #F44336; }    
+
+    table.fastprogress { border-collapse: collapse; margin: 1em 0; font-size: 0.9em; }
+    table.fastprogress th, table.fastprogress td { padding: 8px 12px; border: 1px solid #ddd; text-align: left; }
+    table.fastprogress thead tr { background: #f8f9fa; font-weight: bold; }
+    table.fastprogress tbody tr:nth-of-type(even) { background: #f8f9fa; }
+</style>
+
+
+
+
+<div><progress max="1000" value="1000"></progress> 100.00% [1000/1000 00:00&lt;?]</div>
+
+
+
+```python
+# Project latent samples -> original parameter space
+samples_dict = eqx.filter_vmap(mle_project_fn)(blackjax_samples)
+flat_samples = jax.vmap(lambda p: ravel_pytree(p)[0])(samples_dict)
+
+# Unpack the MLE parameters into a flat array for plotting
+flat_mle, _ = ravel_pytree(mle_params)
+flat_true, _ = ravel_pytree(true_params)
+
+# Get the parameter names for the dataframe columns and the truth dict
+param_names = scalar_names_from_tree(mle_params)
+mcmc_df = pd.DataFrame(np.asarray(flat_samples), columns=param_names)
+truth_dict = {k: float(v) for k, v in zip(param_names, np.asarray(flat_true))}
+
+# Build chains
+mcmc_chain = Chain(samples=mcmc_df, name="MCMC posterior")
+cov_chain = Chain.from_covariance(
+    mean=np.asarray(flat_mle),
+    covariance=np.asarray(np.linalg.inv(H_mle)),
+    columns=param_names,
+    name="Hessian covariance",
+    color="k",
+    shade=True,
+    linewidth=2.0,
+    shade_alpha=0.1,
+)
+
+# Plot
+c = ChainConsumer()
+c.add_chain(mcmc_chain)
+c.add_chain(cov_chain)
+c.add_truth(Truth(location=truth_dict))
+fig = c.plotter.plot()
+```
+
+
+    
+![png](assets/optimisation_tools_files/output_56_0.png)
+    
+
+
+As expected, the sampling results of Blackjax agree with both the Hessian calculation and those of Numpyro
 
 ---
 
