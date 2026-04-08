@@ -18,10 +18,13 @@ dependencies = [
     "numpyro",
     "blackjax",
     "chainconsumer",
+    "jupyter",
+    "ipywidgets",
     "jupyterlab",
     "ipykernel",
     "nbformat",
     "nbconvert",
+    "fastprogress"
 ]
 
 [project.optional-dependencies]
